@@ -179,4 +179,6 @@ setup_args['extras_require'] = dict(
     tornado=extras_require('tornado_opentracing')
 )
 
+setup_args['entry_points'] = {'sagi_entry': ['string = signalfx_tracing:load']}
+
 setup(**setup_args)
