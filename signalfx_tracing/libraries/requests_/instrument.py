@@ -4,15 +4,14 @@ import opentracing
 
 from signalfx_tracing import utils
 
-
 # Configures Requests tracing as described by
 # https://github.com/signalfx/python-requests/blob/master/README.rst
 config = utils.Config(
-    propagate=False,
+    #propagate=False,
+    propagate=True,
     span_tags=None,
     tracer=None,
 )
-
 
 _session_new = [None]
 _session_tracing_new = [None]
@@ -43,7 +42,10 @@ def instrument(tracer=None):
 
     def session_tracing_init(__init__, instance, _, __):
         _tracer = tracer or config.tracer or opentracing.tracer
-        __init__(_tracer, propagate=config.propagate, span_tags=config.span_tags or {})
+        __init__(
+            _tracer,
+            propagate=config.propagate,
+            span_tags=config.span_tags or {})
 
     from requests_opentracing import SessionTracing
 
@@ -52,7 +54,8 @@ def instrument(tracer=None):
 
     SessionTracing.__new__ = session_tracing_new.__get__(SessionTracing)
     requests.Session.__new__ = session_new.__get__(requests.Session)
-    wrap_function_wrapper('requests_opentracing.tracing', 'SessionTracing.__init__', session_tracing_init)
+    wrap_function_wrapper('requests_opentracing.tracing',
+                          'SessionTracing.__init__', session_tracing_init)
 
     utils.mark_instrumented(requests)
 
@@ -66,12 +69,14 @@ def uninstrument():
 
     if _session_tracing_new[0] is not None:
         if hasattr(_session_tracing_new[0], '__get__'):
-            SessionTracing.__new__ = _session_tracing_new[0].__get__(SessionTracing)
+            SessionTracing.__new__ = _session_tracing_new[0].__get__(
+                SessionTracing)
         else:  # builtin doesn't follow descriptor protocol
             SessionTracing.__new__ = _session_tracing_new[0]
     if _session_new[0] is not None:
         if hasattr(_session_new[0], '__get__'):
-            requests.Session.__new__ = _session_new[0].__get__(requests.Session)
+            requests.Session.__new__ = _session_new[0].__get__(
+                requests.Session)
         else:
             requests.Session.__new__ = _session_new[0]
 
