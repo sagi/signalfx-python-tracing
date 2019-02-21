@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 import sys
 import os
 
-version = '0.0.604'
+version = '0.0.605'
 
 protocols = ('http://', 'https://', 'ssh://', 'svn://')
 
@@ -143,10 +143,6 @@ setup_args = dict(
     packages=find_packages(),
     install_requires=requirements,
     tests_require=unit_test_requirements,
-    entry_points=dict(console_scripts=[
-        'sfx-py-trace = scripts.sfx_py_trace:main',
-        'sfx-py-trace-bootstrap = scripts.bootstrap:console_script'
-    ]),
     cmdclass=dict(test=PyTest))
 
 if not pep508:
@@ -191,6 +187,10 @@ setup_args['extras_require'] = dict(
     tornado=extras_require('tornado_opentracing'),
     all=list(map(extras_require, all_instrumentors)))
 
-setup_args['entry_points'] = {'sagi_entry': ['string = jaegermeister:load']}
+setup_args['entry_points'] = {
+    'sagi_entry': ['string = jaegermeister:load'],
+    'console_scripts':
+    ['jaegermeister-bootstrap = scripts.bootstrap:console_script']
+}
 
 setup(**setup_args)
