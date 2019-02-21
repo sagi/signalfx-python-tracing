@@ -111,12 +111,9 @@ with open(os.path.join(cwd, 'README.md')) as readme_file:
 unit_test_requirements = ['mock', 'pytest', 'six']
 
 setup_args = dict(
-    name='signalfx-tracing',
+    name='jaegermeister',
     version=version,
-    author='SignalFx, Inc.',
-    author_email='info@signalfx.com',
-    url='http://github.com/signalfx/signalfx-python-tracing',
-    download_url='http://github.com/signalfx/signalfx-python-tracing/tarball/master',
+    author='Sagi @ L',
     description='Provides auto-instrumentation for OpenTracing-traced libraries and frameworks',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -139,7 +136,7 @@ setup_args = dict(
     tests_require=unit_test_requirements,
     entry_points=dict(
         console_scripts=[
-            'sfx-py-trace = scripts.sfx_py_trace:main',
+           'sfx-py-trace = scripts.sfx_py_trace:main',
             'sfx-py-trace-bootstrap = scripts.bootstrap:console_script'
         ]
     ),
@@ -179,6 +176,6 @@ setup_args['extras_require'] = dict(
     tornado=extras_require('tornado_opentracing')
 )
 
-setup_args['entry_points'] = {'sagi_entry': ['string = signalfx_tracing:load']}
+setup_args['entry_points'] = {'sagi_entry': ['string = jaegermeister:load']}
 
 setup(**setup_args)
