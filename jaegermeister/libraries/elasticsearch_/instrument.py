@@ -1,7 +1,7 @@
 # Copyright (C) 2019 SignalFx, Inc. All rights reserved.
 import opentracing
 
-from signalfx_tracing import utils
+from jaegermeister import utils
 
 # Configures Elasticsearch tracing as described by
 # https://github.com/opentracing-contrib/python-elasticsearch/blob/master/README.rst
@@ -44,7 +44,8 @@ def instrument(tracer=None):
     _tracing_transport_new[0] = TracingTransport.__new__
 
     TracingTransport.__new__ = tracing_transport_new.__get__(TracingTransport)
-    elasticsearch.transport.Transport.__new__ = transport_new.__get__(elasticsearch.transport.Transport)
+    elasticsearch.transport.Transport.__new__ = transport_new.__get__(
+        elasticsearch.transport.Transport)
 
     utils.mark_instrumented(elasticsearch)
 
@@ -64,15 +65,18 @@ def uninstrument():
 
     if _tracing_transport_new[0] is not None:
         if hasattr(_tracing_transport_new[0], '__get__'):
-            TracingTransport.__new__ = _tracing_transport_new[0].__get__(TracingTransport)
+            TracingTransport.__new__ = _tracing_transport_new[0].__get__(
+                TracingTransport)
         else:  # builtin doesn't follow descriptor protocol
             TracingTransport.__new__ = __new__.__get__(TracingTransport)
         _tracing_transport_new[0] = None
 
     if _transport_new[0] is not None:
         if hasattr(_transport_new[0], '__get__'):
-            elasticsearch.transport.Transport.__new__ = _transport_new[0].__get__(elasticsearch.transport.Transport)
+            elasticsearch.transport.Transport.__new__ = _transport_new[
+                0].__get__(elasticsearch.transport.Transport)
         else:
-            elasticsearch.transport.Transport.__new__ = __new__.__get__(elasticsearch.transport.Transport)
+            elasticsearch.transport.Transport.__new__ = __new__.__get__(
+                elasticsearch.transport.Transport)
         _transport_new[0] = None
     utils.mark_uninstrumented(elasticsearch)

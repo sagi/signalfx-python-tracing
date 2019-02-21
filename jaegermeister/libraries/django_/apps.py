@@ -7,7 +7,7 @@ from .instrument import config, instrument
 
 class SignalFxConfig(AppConfig):
 
-    name = 'signalfx_tracing'
+    name = 'jaegermeister'
     verbose_name = 'SignalFx Tracing'
 
     def ready(self):

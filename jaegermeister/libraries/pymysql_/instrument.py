@@ -5,14 +5,16 @@ from wrapt import wrap_function_wrapper
 from opentracing.ext import tags
 import opentracing
 
-from signalfx_tracing import utils
+from jaegermeister import utils
 
 log = logging.getLogger(__name__)
 
 # Configures PyMySQL tracing as described by
 # https://github.com/signalfx/python-dbapi/blob/master/README.rst
 config = utils.Config(
-    traced_commands=['execute', 'executemany', 'callproc', 'commit', 'rollback'],
+    traced_commands=[
+        'execute', 'executemany', 'callproc', 'commit', 'rollback'
+    ],
     span_tags=None,
     tracer=None,
 )
@@ -35,12 +37,17 @@ def instrument(tracer=None):
         _tracer = tracer or config.tracer or opentracing.tracer
 
         traced_commands = set(config.traced_commands)
-        traced_commands_kwargs = dict(trace_execute=False, trace_executemany=False, trace_callproc=False,
-                                      trace_commit=False, trace_rollback=False)
+        traced_commands_kwargs = dict(
+            trace_execute=False,
+            trace_executemany=False,
+            trace_callproc=False,
+            trace_commit=False,
+            trace_rollback=False)
         for command in traced_commands:
             flag = 'trace_{}'.format(command.lower())
             if flag not in traced_commands_kwargs:
-                log.warn('Unable to trace PyMySQL command "{}".  Ignoring.'.format(command))
+                log.warn('Unable to trace PyMySQL command "{}".  Ignoring.'.
+                         format(command))
                 continue
             traced_commands_kwargs[flag] = True
 
@@ -48,8 +55,8 @@ def instrument(tracer=None):
         if config.span_tags is not None:
             span_tags.update(config.span_tags)
 
-        return dbapi_opentracing.ConnectionTracing(connection, _tracer, span_tags=span_tags,
-                                                   **traced_commands_kwargs)
+        return dbapi_opentracing.ConnectionTracing(
+            connection, _tracer, span_tags=span_tags, **traced_commands_kwargs)
 
     wrap_function_wrapper('pymysql', 'connect', pymysql_tracer)
     utils.mark_instrumented(pymysql)

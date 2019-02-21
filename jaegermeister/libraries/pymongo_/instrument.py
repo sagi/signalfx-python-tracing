@@ -2,8 +2,7 @@
 from wrapt import wrap_function_wrapper
 import opentracing
 
-from signalfx_tracing import utils
-
+from jaegermeister import utils
 
 # Configures PyMongo tracing as described by
 # https://github.com/signalfx/python-pymongo/blob/master/README.rst
@@ -28,7 +27,8 @@ def instrument(tracer=None):
         _tracer = tracer or config.tracer or opentracing.tracer
 
         command_tracing = pymongo_opentracing.CommandTracing(
-            tracer=_tracer, span_tags=config.span_tags or {},
+            tracer=_tracer,
+            span_tags=config.span_tags or {},
         )
 
         event_listeners = list(kwargs.pop('event_listeners', []))

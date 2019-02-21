@@ -2,7 +2,7 @@
 from wrapt import wrap_function_wrapper
 import opentracing
 
-from signalfx_tracing import utils
+from jaegermeister import utils
 
 # Configures Requests tracing as described by
 # https://github.com/signalfx/python-requests/blob/master/README.rst
@@ -75,8 +75,7 @@ def uninstrument():
             SessionTracing.__new__ = _session_tracing_new[0]
     if _session_new[0] is not None:
         if hasattr(_session_new[0], '__get__'):
-            requests.Session.__new__ = _session_new[0].__get__(
-                requests.Session)
+            requests.Session.__new__ = _session_new[0].__get__(requests.Session)
         else:
             requests.Session.__new__ = _session_new[0]
 

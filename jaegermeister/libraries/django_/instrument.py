@@ -1,5 +1,5 @@
 # Copyright (C) 2018 SignalFx, Inc. All rights reserved.
-from signalfx_tracing import utils
+from jaegermeister import utils
 
 # Configures Django tracing as described by
 # https://github.com/opentracing-contrib/python-django/blob/master/README.rst
@@ -53,7 +53,8 @@ def instrument(tracer=None):
         settings.OPENTRACING_TRACER_PARAMETERS = config.tracer_parameters or {}
 
     middleware_classes, setting = get_middleware_and_setting_name()
-    setattr(settings, setting, [config.middleware_class] + list(middleware_classes))
+    setattr(settings, setting,
+            [config.middleware_class] + list(middleware_classes))
     utils.mark_instrumented(django)
 
 
@@ -64,8 +65,10 @@ def uninstrument():
 
     settings = utils.get_module('django.conf').settings
     for setting in ('OPENTRACING_TRACE_ALL', 'OPENTRACING_TRACED_ATTRIBUTES',
-                    'OPENTRACING_TRACER_CALLABLE', 'OPENTRACING_TRACER_PARAMETERS',
-                    'OPENTRACING_SET_GLOBAL_TRACER', 'OPENTRACING_TRACING', 'OPENTRACING_TRACER'):
+                    'OPENTRACING_TRACER_CALLABLE',
+                    'OPENTRACING_TRACER_PARAMETERS',
+                    'OPENTRACING_SET_GLOBAL_TRACER', 'OPENTRACING_TRACING',
+                    'OPENTRACING_TRACER'):
         try:
             delattr(settings, setting)
         except AttributeError:

@@ -189,7 +189,7 @@ setup_args['extras_require'] = dict(
     redis=extras_require('redis-opentracing'),
     requests=extras_require('requests-opentracing'),
     tornado=extras_require('tornado_opentracing'),
-    all=map(extras_require, all_instrumentors))
+    all=list(map(extras_require, all_instrumentors)))
 
 setup_args['entry_points'] = {'sagi_entry': ['string = jaegermeister:load']}
 

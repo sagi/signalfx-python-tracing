@@ -6,9 +6,7 @@ import sys
 from .constants import traceable_libraries, auto_instrumentable_libraries
 from .utils import get_module
 
-
 log = logging.getLogger(__name__)
-
 
 # This set of helpers operates under the assumption that a library
 # is a string representation of a python package/module name
@@ -35,7 +33,7 @@ def imported_instrumentor(library):
     Convert a library name to that of the correlated auto-instrumentor
     in the libraries package.
     """
-    instrumentor_lib = 'signalfx_tracing.libraries.{}_'.format(library)
+    instrumentor_lib = 'jaegermeister.libraries.{}_'.format(library)
     return get_module(instrumentor_lib)
 
 
@@ -70,7 +68,9 @@ def auto_instrument(tracer=None):
     Invoke an auto-instrumentor.instrument() for all auto_instrumentable_libraries
     in current execution path.
     """
-    available, unavailable = _importable_libraries(*auto_instrumentable_libraries)
+    available, unavailable = _importable_libraries(
+        *auto_instrumentable_libraries)
     for library in unavailable:
-        log.debug('Unable to auto-instrument {} as it is unavailable.'.format(library))
+        log.debug('Unable to auto-instrument {} as it is unavailable.'.format(
+            library))
     instrument(tracer, **{l: True for l in available})

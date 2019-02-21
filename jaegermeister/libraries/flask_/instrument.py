@@ -2,8 +2,7 @@
 from wrapt import wrap_function_wrapper
 import opentracing
 
-from signalfx_tracing import utils
-
+from jaegermeister import utils
 
 # Configures Flask tracing as described by
 # https://github.com/opentracing-contrib/python-flask/blob/master/README.rst
@@ -32,9 +31,10 @@ def instrument(tracer=None):
         _tracer = tracer or config.tracer or opentracing.tracer
 
         app.config['FLASK_TRACER'] = flask_opentracing.FlaskTracer(
-            tracer=_tracer, trace_all_requests=config.trace_all,
-            app=app, traced_attributes=config.traced_attributes
-        )
+            tracer=_tracer,
+            trace_all_requests=config.trace_all,
+            app=app,
+            traced_attributes=config.traced_attributes)
 
     wrap_function_wrapper('flask', 'Flask.__init__', flask_tracer)
     utils.mark_instrumented(flask)

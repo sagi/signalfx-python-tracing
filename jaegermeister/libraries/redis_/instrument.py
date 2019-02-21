@@ -2,14 +2,11 @@
 from wrapt import wrap_function_wrapper
 import opentracing
 
-from signalfx_tracing import utils
-
+from jaegermeister import utils
 
 # Configures Redis tracing as described by
 # https://github.com/opentracing-contrib/python-redis/blob/master/README.rst
-config = utils.Config(
-    tracer=None,
-)
+config = utils.Config(tracer=None,)
 
 
 def instrument(tracer=None):
@@ -18,8 +15,9 @@ def instrument(tracer=None):
         return
 
     redis_opentracing = utils.get_module('redis_opentracing')
-    redis_opentracing.init_tracing(tracer=tracer or config.tracer or opentracing.tracer,
-                                   trace_all_classes=False)
+    redis_opentracing.init_tracing(
+        tracer=tracer or config.tracer or opentracing.tracer,
+        trace_all_classes=False)
 
     def traced_client(__init__, client, args, kwargs):
         __init__(*args, **kwargs)
