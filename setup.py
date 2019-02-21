@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 import sys
 import os
 
-version = '0.0.6'
+version = '0.0.603'
 
 
 protocols = ('http://', 'https://', 'ssh://', 'svn://')
@@ -137,7 +137,7 @@ setup_args = dict(
     entry_points=dict(
         console_scripts=[
            'sfx-py-trace = scripts.sfx_py_trace:main',
-            'sfx-py-trace-bootstrap = scripts.bootstrap:console_script'
+           'sfx-py-trace-bootstrap = scripts.bootstrap:console_script'
         ]
     ),
     cmdclass=dict(test=PyTest)

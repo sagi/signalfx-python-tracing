@@ -10,3 +10,5 @@
 build/
 dist/
 htmlcov/
+*.swp
+dont_commit.sh
