@@ -17,6 +17,10 @@ def load(module):
 
 
 def boot_agent():
+    jaeger_endpoint = 'http://localhost:14268/api/traces'
+    if 'JAEGERMEISTER_ENDPOINT' in os.environ:
+        jaeger_endpoint = os.environ['JAEGERMEISTER_ENDPOINT']
+
     tracer = create_tracer(
         config={
             'sampler': {
@@ -24,7 +28,7 @@ def boot_agent():
                 'param': 1
             },
             'logging': True,
-            'jaeger_endpoint': 'http://localhost:14268/api/traces',
+            'jaeger_endpoint': jaeger_endpoint,
         },
         service_name='SFX_SAGI',
     )
