@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 import sys
 import os
 
-version = '0.0.606'
+version = '0.0.607'
 
 protocols = ('http://', 'https://', 'ssh://', 'svn://')
 
